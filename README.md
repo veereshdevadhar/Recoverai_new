@@ -1,2793 +1,1042 @@
-# RecoverAI — AI-Powered Revenue Recovery & Payment Reliability Platform
-
-> **RecoverAI turns payment failures into recoverable revenue.**
->
-> It detects merchant-level payment incidents, identifies affected customers, estimates recovery opportunities, chooses the best recovery action using ML + contextual policy, executes bounded interventions, verifies the actual payment outcome, and records only verified recovered revenue.
-
----
-
-## 🚀 What is RecoverAI?
-
-RecoverAI is an end-to-end **AI-powered payment recovery and revenue protection platform** designed for digital merchants.
-
-When payments start failing, most systems stop at:
-
-```text
-Payment Failed
-      ↓
-Retry Payment
-      ↓
-Done
-```
-
-RecoverAI treats payment failure as a **merchant-level incident and revenue recovery problem**.
-
-Instead, the system asks:
-
-```text
-Why are payments failing?
-        ↓
-Is this an isolated failure or a merchant-wide incident?
-        ↓
-How much revenue is exposed?
-        ↓
-Which customers are affected?
-        ↓
-Which customers should be prioritized?
-        ↓
-Which recovery action has the highest expected value?
-        ↓
-Can that action safely be executed?
-        ↓
-Did the customer actually pay?
-        ↓
-Can the payment be independently verified?
-        ↓
-How much revenue was actually recovered?
-```
-
-The result is a complete closed-loop recovery system:
-
-```text
-DETECTION
-   ↓
-DIAGNOSIS
-   ↓
-REVENUE EXPOSURE
-   ↓
-CUSTOMER PRIORITIZATION
-   ↓
-AI DECISION
-   ↓
-GUARDRAILS
-   ↓
-RECOVERY EXECUTION
-   ↓
-PAYMENT
-   ↓
-VERIFICATION
-   ↓
-RECOVERED REVENUE
-   ↓
-ANALYTICS
-   ↓
-FEEDBACK
-   ↓
-INCIDENT RESOLUTION
-```
-
----
-
-# 🎯 The Problem
-
-Payment failures create two different problems.
-
-### 1. Payment reliability problem
-
-A merchant may suddenly experience:
-
-- UPI failures
-- bank-side timeouts
-- network failures
-- checkout failures
-- repeated payment attempts
-- payment-method-specific degradation
-- temporary provider problems
-
-### 2. Revenue recovery problem
-
-Every failed payment can represent revenue that may still be recoverable.
-
-For example:
-
-```text
-Customer wants to purchase ₹12,499 product
-
-        ↓
-
-UPI payment attempted
-
-        ↓
-
-Payment fails
-
-        ↓
-
-Merchant loses a potential ₹12,499 sale
-```
-
-A naive system might retry UPI repeatedly.
-
-RecoverAI instead evaluates:
-
-```text
-Retry later?
-      OR
-Switch payment method?
-      OR
-Send recovery reminder?
-      OR
-Escalate to human?
-      OR
-Stop intervention?
-```
-
-The correct answer depends on:
-
-- failure type
-- retry count
-- transaction amount
-- customer history
-- payment method
-- merchant context
-- incident severity
-- recovery probability
-- expected recovery value
-- intervention cost
-- available recovery channels
-- safety constraints
-
----
-
-# 💡 RecoverAI's Core Idea
-
-RecoverAI separates the problem into two levels.
-
-## Merchant level
-
-RecoverAI asks:
-
-> "Is something going wrong with the merchant's payment system?"
-
-It detects abnormal payment behavior and creates an incident.
-
-## Customer level
-
-RecoverAI asks:
-
-> "Given this incident, what should we do for this particular failed customer?"
-
-The Decision Agent evaluates available recovery actions.
-
-This separation is important because a merchant-wide UPI incident should not be treated like an isolated customer mistake.
-
----
-
-# 🏗️ Complete Architecture
-
-The complete RecoverAI architecture is:
-
-```text
-                         ┌──────────────────────┐
-                         │       NovaCart       │
-                         │  Merchant Simulator  │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Commerce / Payment  │
-                         │       Events         │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Revenue Intelligence │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Merchant Anomaly     │
-                         │      Detection       │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Merchant Incident    │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Root Cause Analysis  │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Revenue Exposure     │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Affected Customers   │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Customer             │
-                         │ Prioritization       │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Incident-Aware       │
-                         │ Recovery Strategy    │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Decision Agent       │
-                         │ ML + Policy          │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Safety Guardrails    │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Recovery Execution   │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Payment Attempt      │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Payment Verification │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Revenue Ledger       │
-                         │ Verified Recovery     │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Recovery Analytics   │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Feedback / Learning  │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Incident Monitoring  │
-                         └──────────┬───────────┘
-                                    │
-                                    ▼
-                         ┌──────────────────────┐
-                         │ Incident Resolution  │
-                         └──────────────────────┘
-```
-
----
-
-# 🔄 End-to-End Flow
-
-A typical RecoverAI flow looks like this:
-
-## Step 1 — Merchant operates normally
-
-NovaCart generates normal commerce and payment activity.
-
-RecoverAI observes events such as:
-
-```text
-checkout_started
-payment_attempted
-payment_failed
-payment_success
-order_created
-order_paid
-```
-
----
-
-## Step 2 — Payment failure occurs
-
-Example:
-
-```text
-Customer: CUS_001867
-Product: Smart Watch
-Amount: ₹12,499
-Payment method: UPI
-Result: FAILED
-```
-
-The failed payment becomes an event inside RecoverAI.
-
----
-
-## Step 3 — Revenue Intelligence observes merchant behavior
-
-RecoverAI does not immediately assume that one failed payment means a merchant incident.
-
-It looks at the broader payment behavior.
-
-It can analyze:
-
-- payment-method failure rates
-- failure types
-- recent payment history
-- merchant behavior
-- event distributions
-- temporal changes
-- affected payment methods
-
----
-
-## Step 4 — Merchant anomaly detection
-
-If the observed behavior becomes abnormal, RecoverAI creates a merchant incident.
-
-For example:
-
-```text
-Normal UPI failure rate
-        ↓
-       12%
-
-Observed UPI failure rate
-        ↓
-       48%
-
-        ↓
-
-Merchant-level anomaly detected
-```
-
----
-
-## Step 5 — Incident diagnosis
-
-RecoverAI determines the likely cause.
-
-Example:
-
-```text
-Incident:
-UPI reliability degradation
-
-Root cause:
-BANK_TIMEOUT
-
-Affected method:
-UPI
-
-Severity:
-HIGH
-```
-
----
-
-## Step 6 — Revenue exposure
-
-RecoverAI estimates the amount of revenue exposed by the incident.
-
-Important distinction:
-
-```text
-Revenue Exposed
-≠
-Expected Recovery
-≠
-Recovered Revenue
-```
-
-### Revenue exposed
-
-Money potentially lost because of payment failure.
-
-### Expected recovery
-
-Model estimate of how much can potentially be recovered.
-
-### Recovered revenue
-
-Money that was **actually paid and independently verified**.
-
----
-
-# 🤖 Decision Agent
-
-The Decision Agent is the core customer-level decision engine.
-
-It does not simply implement:
-
-```text
-UPI failure → retry
-```
-
-Instead it evaluates the available recovery actions.
-
-Possible actions include:
-
-```text
-ALTERNATIVE_PAYMENT
-RECOVERY_REMINDER
-RETRY_LATER
-HUMAN_ESCALATION
-STOP
-```
-
----
-
-# 🧠 ML + Policy Decisioning
-
-RecoverAI combines predictive modeling with contextual policy.
-
-Conceptually:
-
-```text
-Customer / Payment Context
-          ↓
-     ML Prediction
-          ↓
-Recovery Probability
-          ↓
-Expected Recovery Value
-          ↓
-Contextual Policy Adjustment
-          ↓
-Policy-Adjusted Expected Value
-          ↓
-Guardrails
-          ↓
-Final Action
-```
-
-The model provides the predictive signal.
-
-The policy layer adds context.
-
-The guardrails provide hard safety boundaries.
-
----
-
-# 📊 Decision Features
-
-Decisioning can consider information such as:
-
-- transaction amount
-- payment method
-- failure type
-- retry count
-- customer history
-- merchant reliability
-- incident context
-- recovery action
-- predicted recovery probability
-- intervention cost
-- expected net value
-- eligibility constraints
-
----
-
-# 🛡️ Guardrails
-
-RecoverAI does not allow the ML model to freely execute arbitrary actions.
-
-Some rules are hard constraints.
-
-For example:
-
-```text
-retry_count >= retry_limit
-        ↓
-RETRY_LATER BLOCKED
-```
-
-or:
-
-```text
-All available recovery actions
-have non-positive expected value
-        ↓
-STOP
-```
-
-or:
-
-```text
-High-value customer
-+
-eligible escalation
-        ↓
-HUMAN_ESCALATION may become competitive
-```
-
-The model recommends.
-
-The guardrails constrain.
-
-The execution layer enforces.
-
----
-
-# 💰 Expected Value
-
-The decision system evaluates recovery actions using expected value.
-
-Conceptually:
-
-```text
-Expected Recovery
-=
-Recovery Probability × Transaction Value
-```
-
-Then intervention cost can be considered:
-
-```text
-Expected Net Value
-=
-Expected Recovery - Intervention Cost
-```
-
-RecoverAI can therefore compare:
-
-```text
-RETRY_LATER
-       vs
-ALTERNATIVE_PAYMENT
-       vs
-RECOVERY_REMINDER
-       vs
-HUMAN_ESCALATION
-```
-
-instead of blindly retrying.
-
----
-
-# 🏪 Merchant Simulator
-
-The Merchant Simulator is one of the most important parts of RecoverAI.
-
-It provides a controlled environment representing a merchant's commerce and payment system.
-
-The simulator allows the complete architecture to be demonstrated without depending on real customers or real payment infrastructure.
-
-Conceptually:
-
-```text
-NovaCart
-   ↓
-Customer
-   ↓
-Product
-   ↓
-Checkout
-   ↓
-Payment Attempt
-   ↓
-Failure / Success
-   ↓
 RecoverAI
-```
-
----
-
-# Why the Merchant Simulator exists
-
-Without a simulator, demonstrating the full architecture would require:
-
-- a real merchant
-- real customer traffic
-- real payment failures
-- real incidents
-- real recovery actions
-
-That is unsafe and impractical.
-
-The Merchant Simulator provides deterministic synthetic activity instead.
-
-It allows us to reproduce scenarios such as:
-
-```text
-Normal merchant activity
-        ↓
-Payment failure spike
-        ↓
-Merchant incident
-        ↓
-Customer affected
-        ↓
-RecoverAI decision
-        ↓
-Recovery
-        ↓
-Payment success
-```
-
----
-
-# 🎬 Deterministic Demo
-
-The demo is designed to be reproducible.
-
-A representative scenario is:
-
-```text
-1. NovaCart operates normally
-2. Customer selects a product
-3. Checkout begins
-4. Customer chooses UPI
-5. UPI payment is attempted
-6. Payment fails
-7. Event enters RecoverAI
-8. Revenue Intelligence observes merchant behavior
-9. Merchant anomaly is detected
-10. Incident is created
-11. Root cause is identified
-12. Revenue exposure is calculated
-13. Affected customer is identified
-14. Customer is prioritized
-15. Decision Agent evaluates recovery actions
-16. Guardrails are evaluated
-17. Recovery action is selected
-18. Recovery executes in simulation
-19. Customer responds
-20. Second payment attempt occurs
-21. Payment succeeds
-22. RecoverAI verifies the outcome
-23. Order becomes PAID
-24. Revenue Ledger records verified recovery
-25. Recovery analytics update
-26. Feedback is recorded
-27. Incident monitoring observes improvement
-28. Incident reaches RESOLVED
-```
-
-This makes the entire causal chain visible:
-
-```text
-Merchant event
-→ anomaly
-→ incident
-→ diagnosis
-→ revenue exposure
-→ affected customer
-→ recovery decision
-→ execution
-→ payment
-→ verification
-→ recovered revenue
-→ analytics
-→ feedback
-→ resolution
-```
-
----
-
-# 💳 Razorpay Integration
-
-RecoverAI includes a real Razorpay Test Mode integration.
-
-The project deliberately separates:
 
-```text
-DEMO
-RAZORPAY TEST / SANDBOX
-LIVE PRODUCTION
-```
+RecoverAI is a revenue-recovery platform for payment failures. It observes payment events, identifies why revenue is at risk, chooses a bounded recovery action, executes it through a controlled execution layer, and verifies the outcome before counting it as recovered revenue.
 
-These are not interchangeable.
+The project combines a merchant/payment simulator, a decision agent, revenue-intelligence analytics, recovery execution and verification, policy/evaluation tooling, and an optional Razorpay Test Mode integration.
 
----
+Core idea: a failed payment should not automatically become a blind retry. RecoverAI asks what happened, which recovery action makes sense, whether it is safe to execute, and whether the recovery actually succeeded.
 
-# 🟦 DEMO Mode
+1. The problem
 
-DEMO is the safest mode.
+A failed payment does not always mean permanently lost revenue.
 
-```text
-DEMO
- ↓
-Local simulation
- ↓
-No external payment provider
- ↓
-No real money
-```
-
-It is intended for:
-
-- development
-- UI demonstrations
-- deterministic scenarios
-- architecture demonstrations
-- automated tests
-
----
-
-# 🟨 RAZORPAY TEST / SANDBOX
-
-SANDBOX uses Razorpay Test Mode.
-
-```text
-SANDBOX
-   ↓
-Razorpay Test APIs
-   ↓
-rzp_test_* credentials
-   ↓
-No real money
-```
+A timeout, bank technical error, issuer decline, repeated failure, or payment-method problem can have different recovery opportunities. Blind retries can create unnecessary attempts and costs.
 
-The application can create a Razorpay Test order and open Razorpay Standard Checkout.
+RecoverAI treats a failed payment as an event that needs to be:
 
-The test checkout can then produce payment events such as:
-
-```text
-payment.failed
-payment.captured
-order.paid
-```
-
-The backend receives the signed webhook and processes the event.
-
----
-
-# 🔐 Razorpay Webhook Verification
-
-RecoverAI does not trust a payment event simply because a provider says it happened.
-
-The webhook is verified using the configured Razorpay webhook secret.
-
-Conceptually:
-
-```text
-Razorpay
-   ↓
-Signed webhook
-   ↓
-RecoverAI webhook endpoint
-   ↓
-Signature verification
-   ↓
-Event validation
-   ↓
-RecoverAI execution reference
-   ↓
-Payment verification
-```
+Detected
 
-Only verified payment success is allowed to become recovered revenue.
-
----
-
-# 🚨 Critical Revenue Rule
-
-This is one of the most important architectural rules in RecoverAI:
-
-```text
-Provider accepted request
-        ≠
-Recovered Revenue
-```
+Diagnosed
 
-For example:
+Prioritized
 
-```text
-Razorpay Payment Link created
-        ↓
-NOT recovered revenue
-```
+Recovered using a bounded action
 
-Instead:
+Verified using an actual outcome signal
 
-```text
-Payment Link created
-        ↓
-Customer pays
-        ↓
-Razorpay webhook received
-        ↓
-Webhook verified
-        ↓
-Payment amount verified
-        ↓
-RecoverAI execution identified
-        ↓
-Execution marked recovered
-        ↓
-Revenue Ledger updated
-```
+The result is a closed-loop recovery system rather than a simple payment-retry script.
 
-Therefore:
+2. How RecoverAI works
 
-```text
-VERIFIED_PAYMENT_SUCCESS
-        ↓
-VERIFIED_RECOVERED
-```
+                    PAYMENT / MERCHANT EVENTS
+                              |
+                              v
+                    +-------------------+
+                    | Revenue           |
+                    | Intelligence      |
+                    +---------+---------+
+                              |
+                    anomalies / root causes
+                              |
+                              v
+                    +-------------------+
+                    | Customer /        |
+                    | Revenue Ranking   |
+                    +---------+---------+
+                              |
+                              v
+                    +-------------------+
+                    | Decision Agent    |
+                    | diagnose + rank   |
+                    | recovery actions  |
+                    +---------+---------+
+                              |
+                              v
+                    +-------------------+
+                    | Guardrails /      |
+                    | Execution Policy  |
+                    +---------+---------+
+                              |
+                              v
+                    +-------------------+
+                    | Recovery          |
+                    | Execution         |
+                    +---------+---------+
+                              |
+                              v
+                    +-------------------+
+                    | Verification      |
+                    | confirmed outcome |
+                    +---------+---------+
+                              |
+                    +---------+---------+
+                    |                   |
+                    v                   v
+              Audit / Ledger      Analytics /
+              / Execution Log     Feedback
 
----
+The main intelligence loop is:
 
-# 🧪 Razorpay Test Checkout
+DETECT -> DIAGNOSE -> PRIORITIZE -> RECOVER -> VERIFY
 
-The frontend provides a Razorpay Test Payment workflow.
+3. Main components
 
-The flow is:
+3.1 Merchant Simulator
 
-```text
-RecoverAI UI
-      ↓
-Create server-side Razorpay TEST order
-      ↓
-Open Razorpay Standard Checkout
-      ↓
-Customer completes test payment
-      ↓
-Razorpay emits event
-      ↓
-RecoverAI webhook receives event
-      ↓
-Signature verified
-      ↓
-Payment state updated
-```
+The Merchant Simulator creates a realistic local merchant environment without contacting real customers or payment providers.
 
-For test checkout, Razorpay's test credentials can be used to simulate successful and failed payments.
+It can simulate:
 
-The UI also exposes the resulting webhook/decision state.
+customers
 
----
+products
 
-# 🔁 Recovery Payment Link
+orders
 
-When RecoverAI selects:
+checkouts
 
-```text
-ALTERNATIVE_PAYMENT
-```
+payment attempts
 
-the execution layer can create a Razorpay Payment Link in the configured execution environment.
+payment successes and failures
 
-Important:
+failure types
 
-```text
-Payment Link created
-        ↓
-Recovery execution created
-        ↓
-Customer pays
-        ↓
-Webhook verification
-        ↓
-Recovery execution becomes RECOVERED
-```
+abandoned checkouts
 
-The link creation itself is not treated as revenue recovery.
+recovery actions
 
----
+recovery outcomes
 
-# 🌐 Execution Environments
+merchant incidents
 
-RecoverAI supports three explicit execution environments.
+timeline events
 
-| Environment | External Calls | Real Money | Purpose |
-|---|---:|---:|---|
-| `DEMO` | No | No | Local simulation |
-| `SANDBOX` | Test providers | No | Razorpay Test / integration testing |
-| `PRODUCTION` | Production providers | Possible | Controlled live execution |
+repeated payment behavior
 
----
+A typical flow is:
 
-# 🟢 DEMO
+Customer
+   |
+Product / Order
+   |
+Checkout
+   |
+Payment attempt
+   |
+   +---- SUCCESS
+   |
+   +---- FAILURE
+           |
+           v
+   RecoverAI event
+           |
+           v
+   Decision Agent
+           |
+           v
+   Recovery action
+           |
+           v
+   Verification
 
-Default and safest environment.
+The simulator is intentionally separate from live payment execution. It is the recommended environment for demonstrations and repeated testing.
 
-```env
-RECOVERAI_EXECUTION_ENV=DEMO
-RECOVERAI_LIVE_EXECUTION=0
-```
+3.2 Revenue Intelligence
 
-No external provider is contacted.
+Revenue Intelligence looks at payment behavior over time instead of treating every failure independently.
 
----
+It provides capabilities for:
 
-# 🟡 SANDBOX
+anomaly detection
 
-Used for Razorpay Test Mode and explicitly configured sandbox integrations.
+failure-rate deterioration
 
-```env
-RECOVERAI_EXECUTION_ENV=SANDBOX
-RECOVERAI_LIVE_EXECUTION=1
-```
+root-cause segmentation
 
-For Razorpay:
+affected-customer discovery
 
-```text
-RAZORPAY_KEY_ID must begin with:
+revenue-at-risk calculations
 
-rzp_test_
-```
+merchant health
 
-Sandbox payment execution is therefore hard-bound to Razorpay Test credentials.
+incident monitoring
 
----
+blast-radius analysis
 
-# 🔴 PRODUCTION
+outcome analytics
 
-Production is intentionally difficult to activate.
+audit and safety views
 
-Production requires:
+Recent behavior can be compared against historical baselines to identify segments whose payment reliability is deteriorating.
 
-- production environment
-- admin authorization
-- explicit live confirmation
-- Razorpay LIVE credentials
-- Razorpay webhook secret
-- production execution arming
-- action allow-list
-- amount limits
-- daily budget
-- kill-switch protection
-- per-execution confirmation
+3.3 Decision Agent
 
-Production Razorpay credentials must use:
+The Decision Agent evaluates payment and customer context and ranks allowed recovery actions.
 
-```text
-rzp_live_
-```
+Depending on the situation, actions can include:
 
-Test credentials are blocked from production activation.
-
----
-
-# 🛑 Production Safety
-
-RecoverAI includes multiple safety layers.
-
-## Admin authorization
-
-Production changes require:
-
-```env
-RECOVERAI_ADMIN_TOKEN
-```
-
-## Explicit confirmation
-
-Production cannot be enabled silently.
-
-The operator must explicitly confirm live execution.
-
-## Production arming
-
-Production execution requires:
-
-```env
-RECOVERAI_PRODUCTION_EXECUTION_ARMED=1
-```
-
-and server-side validation.
-
-## Kill switch
-
-Live execution can be stopped using the kill switch.
-
-```text
-Kill switch ACTIVE
-        ↓
-Live execution blocked
-```
-
-## Per-action allow-list
-
-Recovery actions can be explicitly enabled.
-
-Supported action controls include:
-
-```env
-RECOVERAI_ALLOW_ALTERNATIVE_PAYMENT
-RECOVERAI_ALLOW_RECOVERY_REMINDER
-RECOVERAI_ALLOW_RETRY_LATER
-RECOVERAI_ALLOW_HUMAN_ESCALATION
-```
-
-## Amount limits
-
-Live actions are bounded by:
-
-```env
-RECOVERAI_MAX_LIVE_AMOUNT
-```
-
-## Daily budget
-
-Production execution is bounded by:
-
-```env
-RECOVERAI_DAILY_LIVE_BUDGET
-```
-
-The default daily live budget is:
-
-```text
-₹50,000
-```
-
-The default production per-action amount limit is:
-
-```text
-₹10,000
-```
-
-Sandbox has a larger default per-action limit for testing.
-
----
-
-# 📬 Recovery Channels
-
-RecoverAI's execution layer supports multiple recovery channels.
-
-## Alternative Payment
-
-```text
-ALTERNATIVE_PAYMENT
-        ↓
-Razorpay Payment Link
-```
-
-Used when switching payment method can improve recovery probability.
-
----
-
-## Recovery Reminder
-
-```text
-RECOVERY_REMINDER
-        ↓
-Email / SMS / supported channel
-```
-
-Email can use SMTP.
-
-SMS can use Twilio.
-
-The exact channel is selected based on configuration and customer contact availability.
-
----
-
-## Retry Later
-
-```text
 RETRY_LATER
-        ↓
-Retry scheduling / orchestration webhook
-```
 
-RecoverAI itself does not blindly charge a customer again.
+ALTERNATIVE_PAYMENT
 
-The retry action can send a scheduling/orchestration command to the configured execution webhook.
+RECOVERY_REMINDER
 
----
+other bounded actions supported by the current policy
 
-## Human Escalation
+The decision takes into account the available event/customer/payment context, recovery probability, expected value and policy/guardrail constraints.
 
-```text
-HUMAN_ESCALATION
-        ↓
-Bounded escalation case
-```
+RecoverAI therefore does not treat every failure as an automatic retry.
 
-Useful for eligible high-value or otherwise sensitive cases.
+The Decision Agent also produces an explanation for the selected action so the recommendation can be inspected.
 
----
+3.4 Recovery Execution
 
-# 📧 Email Integration
+The execution layer is separate from the decision layer:
 
-SMTP can be configured for recovery reminders.
-
-Relevant configuration includes:
-
-```env
-SMTP_HOST
-SMTP_PORT
-SMTP_USERNAME
-SMTP_PASSWORD
-SMTP_FROM
-SMTP_USE_SSL
-SMTP_STARTTLS
-```
-
-In SANDBOX, email execution is restricted to the configured test destination:
-
-```env
-RECOVERAI_SANDBOX_EMAIL
-```
-
-This prevents accidental emails to arbitrary addresses during testing.
-
----
-
-# 📱 Twilio Integration
-
-SMS execution can be configured using Twilio.
-
-Production-style configuration can use:
-
-```env
-TWILIO_ACCOUNT_SID
-TWILIO_AUTH_TOKEN
-TWILIO_FROM
-```
-
-Sandbox test credentials can use:
-
-```env
-TWILIO_TEST_ACCOUNT_SID
-TWILIO_TEST_AUTH_TOKEN
-```
-
-Sandbox SMS is restricted to:
-
-```env
-RECOVERAI_SANDBOX_PHONE
-```
-
----
-
-# 🔊 Voice
-
-RecoverAI can generate recovery/communication content suitable for voice interaction and browser playback.
-
-However, the application deliberately does not pretend that a real outbound telephone call occurred when a telephony provider is not configured.
-
-If no voice provider is configured, the system reports the channel as unavailable rather than fabricating execution success.
-
----
-
-# 🗃️ Data Architecture
-
-The project separates source data, processed artifacts, runtime state and application code.
-
-```text
-data/
-├── raw/
-│   ├── customers.csv
-│   ├── events.csv
-│   ├── merchants.csv
-│   └── recovery_actions.csv
-│
-├── processed/
-│   ├── models/
-│   ├── action_performance.csv
-│   ├── event_distribution.csv
-│   ├── failure_distribution.csv
-│   ├── failure_recovery_analysis.csv
-│   ├── monthly_analysis.csv
-│   ├── payment_method_analysis.csv
-│   ├── policy_analysis.csv
-│   ├── recovery_probability_by_event.csv
-│   ├── retry_analysis.csv
-│   ├── revenue_by_event.csv
-│   └── ...
-│
-└── runtime/
-    └── .gitkeep
-```
-
----
-
-# 🤖 Machine Learning Artifacts
-
-The repository contains processed model artifacts and evaluation outputs under:
-
-```text
-data/processed/models/
-```
-
-Examples include:
-
-```text
-baseline_logistic_regression.joblib
-recoverai_v1.joblib
-recoverai_v2_action_models.joblib
-recoverai_v3_100k_action_models.joblib
-```
-
-Associated metrics and evaluation artifacts are stored alongside them.
-
----
-
-# 📈 Evaluation & Policy Lab
-
-RecoverAI includes an evaluation layer for analyzing decision quality.
-
-The project contains modules for:
-
-```text
-baselines
-calibration
-counterfactual analysis
-drift
-EDA
-ledger analysis
-offline policy evaluation
-planning
-policy lab
-policy regret
-policy versions
-```
-
-This makes it possible to evaluate the system beyond a single successful demo.
-
----
-
-# 🔬 Counterfactual Analysis
-
-RecoverAI can compare alternative recovery strategies.
-
-For example:
-
-```text
-Scenario A:
-Continue retrying UPI
-
-vs.
-
-Scenario B:
-Switch eligible customers to alternative payment
-```
-
-Counterfactual analysis is intended for post-hoc evaluation.
-
-Actual recovery outcomes must not leak into decision-time model features.
-
-This separation is important to avoid data leakage.
-
----
-
-# 📊 Recovery Analytics
-
-RecoverAI tracks more than payment success.
-
-Important metrics include:
-
-### Revenue exposed
-
-Amount at risk because of payment failure.
-
-### Revenue recovered
-
-Actual verified successful payment.
-
-### Recovery rate
-
-```text
-Recovered Revenue
------------------
-Revenue Exposed
-```
-
-### Incremental recovery
-
-Recovery attributable to the intervention relative to the relevant baseline.
-
-### Intervention cost
-
-Cost of executing the recovery action.
-
-### Net recovery
-
-```text
-Recovered Revenue - Intervention Cost
-```
-
-Additional analysis can include:
-
-- affected customers
-- recovered customers
-- failed interventions
-- escalations
-- retries
-- payment-method switches
-- recovery lift
-- recovery ROI
-- action-level performance
-- merchant-level performance
-- incident-level performance
-
----
-
-# 🔄 Feedback / Learning Loop
-
-After a recovery action executes, RecoverAI can record the actual outcome.
-
-A feedback record can contain:
-
-```text
-event_id
-merchant_id
-customer_id
-incident_id
-payment_method
-failure_type
-amount
-selected_action
-predicted_probability
-expected_recovery
-expected_net_value
-actual_recovered_amount
-actual_outcome
-intervention_cost
-verified
-incident_context
-timestamp
-```
-
-Possible outcomes include:
-
-```text
-RECOVERED
-FAILED
-STOPPED
-ESCALATED
-SCHEDULED
-EXPIRED
-```
-
-This enables:
-
-```text
-Predicted outcome
-       vs
-Actual outcome
-```
-
-and supports:
-
-- prediction error analysis
-- calibration
-- action effectiveness
-- merchant performance
-- incident performance
-- model evaluation
-- future policy improvement
-
-The feedback layer does not automatically retrain the production model.
-
----
-
-# 🧱 Backend Architecture
-
-The backend is implemented in Python using FastAPI.
-
-Important backend areas include:
-
-```text
-src/
-├── api/
-├── data/
-├── db/
-├── decision/
-├── evaluation/
-├── features/
-├── models/
-├── risk/
-│
-├── incident_platform.py
-├── integrations.py
-├── intelligence.py
-├── merchant_simulator.py
-└── voice.py
-```
-
----
-
-# 🔌 API Layer
-
-The FastAPI application exposes the platform through HTTP endpoints.
-
-The API layer handles:
-
-- simulation
-- payment events
-- incidents
-- decisioning
-- recovery execution
-- execution logs
-- integration status
-- Razorpay webhooks
-- production controls
-- analytics
-- recovery verification
-
-The application is started from:
-
-```text
-src.api.main
-```
-
----
-
-# 🗄️ Database Layer
-
-Database functionality is separated into:
-
-```text
-src/db/
-├── database.py
-├── models.py
-└── repository.py
-```
-
-This keeps persistence concerns separate from:
-
-- decision logic
-- execution
-- API routing
-- analytics
-- simulation
-
-Runtime database files are excluded from Git.
-
----
-
-# 🎨 Frontend
-
-The frontend is a React application using Vite.
-
-```text
-frontend/
-├── src/
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── styles.css
-│
-├── index.html
-├── package.json
-├── package-lock.json
-└── vite.config.js
-```
-
-The dashboard exposes the major parts of the RecoverAI workflow.
-
----
-
-# 🖥️ Dashboard Capabilities
-
-The UI provides visibility into:
-
-- merchant metrics
-- payment attempts
-- revenue at risk
-- recovered revenue
-- simulation controls
-- event timeline
-- customer selection
-- product selection
-- failure injection
-- merchant incidents
-- AI decisioning
-- recovery execution
-- execution environment
-- Razorpay Test Checkout
-- verification state
-- recovery analytics
-- integration status
-- safety controls
-
----
-
-# 📡 Live Event Timeline
-
-The dashboard provides a live event timeline so the user can observe the causal chain.
-
-Typical events can include:
-
-```text
-Order created
-      ↓
-Checkout started
-      ↓
-Payment attempted
-      ↓
-Payment failed
-      ↓
-Incident injected
-      ↓
-Incident detected
-      ↓
-Decision made
-      ↓
-Recovery executed
-      ↓
-Payment verified
-      ↓
-Revenue recovered
-```
-
-This is particularly useful during demonstrations because the judge can see what is happening instead of only seeing a final number.
-
----
-
-# 🧪 Testing
-
-RecoverAI includes a comprehensive automated test suite.
-
-Tests cover areas such as:
-
-```text
-merchant simulator
-payment behavior
-decision agent
-execution
-Razorpay integration
-Razorpay webhooks
-production safety
-production realtime behavior
-revenue autopilot
-voice recovery
-planner
-league / evaluation behavior
-external integrations
-```
-
-Run the complete suite with:
-
-```powershell
-pytest -q
-```
-
-For verbose output:
-
-```powershell
-pytest -v
-```
-
-Run a specific test file:
-
-```powershell
-pytest tests/test_merchant_simulator.py -v
-```
-
-Example:
-
-```powershell
-pytest tests/test_razorpay_test_checkout.py -v
-```
-
----
-
-# 🧪 Testing Philosophy
-
-The project should be tested at multiple levels.
-
-## Unit tests
-
-Validate individual components.
-
-```text
-Decision Agent
-Simulator
+Decision
+   |
+   v
+Is the action allowed?
+   |
+   v
 Guardrails
-Repository
-Evaluation
-```
+   |
+   v
+Execute
 
-## Integration tests
+For demonstrations, execution can use the local bounded simulator.
 
-Validate interactions between:
+Production-style execution has additional controls such as explicit arming, environment checks, budgets and kill-switch/circuit-breaker controls.
 
-```text
-API
-Database
-Decision Agent
-Execution
-Integrations
-Webhooks
-```
+3.5 Verification
 
-## End-to-end tests
+RecoverAI does not assume that an attempted recovery was successful.
 
-Validate:
+Verification classifies the execution using available outcome evidence.
 
-```text
-Event
-→ Incident
-→ Decision
-→ Execution
-→ Verification
-→ Recovery
-```
+Recovery action
+      |
+      v
+Payment/provider outcome
+      |
+      v
+SUCCESS CONFIRMED
+      |
+      v
+Recovered revenue
 
-## Safety tests
+If there is no successful payment confirmation, the result remains failed or pending rather than being counted as recovered.
 
-Validate:
+A recovery attempt is not the same thing as recovered revenue.
 
-```text
-DEMO cannot make live calls
-SANDBOX requires test credentials
-PRODUCTION requires authorization
-Test credentials cannot activate LIVE
-Kill switch blocks execution
-Amount limits are enforced
-Daily budgets are enforced
-Invalid webhooks are rejected
-Repeated events are handled safely
-```
+Verified recovery is therefore kept separate from predicted or expected recovery.
 
----
+3.6 Revenue Recovery Autopilot
 
-# 🛠️ Prerequisites
+The Autopilot runs the complete bounded revenue-intelligence cycle:
 
-Before running RecoverAI locally, install:
+01 DETECT
+     |
+02 DIAGNOSE
+     |
+03 PRIORITIZE
+     |
+04 EXECUTE
+     |
+05 VERIFY
 
-### Required
+Autopilot is operator-triggered. It does not continuously execute customer/payment actions by itself.
 
-- Python 3.10+ recommended
-- Node.js
-- npm
-- Git
+In Safe Simulation mode, execution uses the local bounded simulator.
 
-### Optional / Integration dependent
+A run can report:
 
-- Razorpay account for Test Mode
-- SMTP provider
-- Twilio account
-- external execution webhook endpoint
+detected anomalies
 
----
+deteriorating root-cause segments
 
-# 📥 Clone the Repository
+affected customers
 
-```powershell
-git clone https://github.com/veereshdevadhar/Recoverai_new.git
-cd Recoverai_new
-```
+selected recovery actions
 
----
+execution results
 
-# 🐍 Backend Setup — Windows
+verified recoveries
 
-Create a virtual environment:
+revenue exposed
 
-```powershell
-python -m venv venv
-```
+revenue recovered
 
-Activate it:
+intervention cost
 
-```powershell
-.\venv\Scripts\Activate.ps1
-```
+net recovery
 
-If PowerShell blocks activation, run:
+recovery rate
 
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-```
+recovery ROI
 
-Then:
+merchant health
 
-```powershell
-.\venv\Scripts\Activate.ps1
-```
+Customer discovery and execution are bounded so a single run cannot turn into uncontrolled bulk execution.
 
-Install dependencies:
+4. Merchant Simulator vs Razorpay integration
 
-```powershell
-pip install -r requirements.txt
-```
+These are separate parts of the project.
 
----
+Merchant Simulator
 
-# 🐧 Backend Setup — Linux / macOS
+Local synthetic merchant
+        |
+        v
+Synthetic payment events
+        |
+        v
+RecoverAI
+        |
+        v
+Bounded simulated recovery
 
-Create environment:
+Use it for:
 
-```bash
-python3 -m venv venv
-```
+demos
 
-Activate:
+repeated experiments
 
-```bash
-source venv/bin/activate
-```
+failure scenarios
 
-Install dependencies:
+Autopilot
 
-```bash
-pip install -r requirements.txt
-```
+revenue-intelligence testing
 
----
+safe recovery evaluation
 
-# 🔐 Environment Configuration
+No real customer or payment provider is contacted.
 
-Copy:
+Razorpay Test Mode
 
-```text
-.env.example
-```
+Razorpay Test Mode
+        |
+        v
+Test payment / webhook
+        |
+        v
+RecoverAI integration
+        |
+        v
+Verification / recovery flow
 
-to:
+Use this to demonstrate integration with an actual payment platform in a sandbox/test environment.
 
-```text
-.env
-```
+Use Razorpay Test Mode credentials for this workflow.
 
-Windows:
+Production
 
-```powershell
+Production is a separate deployment boundary:
+
+Live credentials
+      +
+Explicit production authorization
+      +
+Production guardrails
+      +
+Live provider integration
+
+Do not use live credentials for the local simulator or normal demo testing.
+
+5. Project structure
+
+RecoverAI/
+|
++-- src/
+|   +-- api/
+|   |   +-- main.py
+|   |
+|   +-- data/
+|   |   +-- customer_generator.py
+|   |   +-- event_generator.py
+|   |   +-- merchant_generator.py
+|   |   +-- recovery_simulator.py
+|   |   +-- validator.py
+|   |
+|   +-- db/
+|   |   +-- database.py
+|   |   +-- models.py
+|   |   +-- repository.py
+|   |
+|   +-- decision/
+|   |   +-- agent.py
+|   |   +-- attribution.py
+|   |   +-- b2b_chaser.py
+|   |   +-- execution.py
+|   |   +-- explanation.py
+|   |   +-- mandate_sequencer.py
+|   |   +-- promise_tracker.py
+|   |   +-- sequencer.py
+|   |
+|   +-- evaluation/
+|       +-- baselines.py
+|       +-- calibration.py
+|       +-- counterfactual.py
+|       +-- drift.py
+|       +-- eda.py
+|       +-- ledger.py
+|       +-- offline_policy.py
+|       +-- planner.py
+|       +-- policy_lab.py
+|       +-- policy_* files
+|
++-- frontend/
+|   +-- src/
+|   |   +-- App.jsx
+|   |   +-- main.jsx
+|   |   +-- styles.css
+|   +-- package.json
+|   +-- vite.config.js
+|
++-- data/
+|   +-- raw/
+|   +-- processed/
+|   +-- runtime/
+|
++-- tests/
+|
++-- requirements.txt
++-- .env.example
++-- .gitignore
++-- run_backend.ps1
++-- run_frontend.ps1
++-- run_tests.ps1
++-- run_backend.sh
++-- run_frontend.sh
++-- run_tests.sh
++-- README.md
+
+6. Prerequisites
+
+Install:
+
+Python 3.10+ recommended
+
+Node.js and npm
+
+Git
+
+A modern browser
+
+For Razorpay Test Mode, you also need the appropriate Razorpay test credentials.
+
+For public webhook testing from a local machine, a tunneling solution such as zrok can be used.
+
+7. Environment configuration
+
+Create the environment file from the example:
+
 Copy-Item .env.example .env
-```
 
-Linux/macOS:
+Open .env and configure the values required for the features you want to test.
 
-```bash
-cp .env.example .env
-```
+These may include:
 
-Then edit:
+Razorpay Test credentials
 
-```text
-.env
-```
+application settings
 
-Never commit the real `.env`.
+execution environment
 
-The repository's `.gitignore` excludes:
+production safety settings
 
-```text
+webhook configuration
+
+Important
+
+Never commit .env to Git.
+
+The repository .gitignore excludes:
+
 .env
 venv/
 .venv/
-node_modules/
-.pytest_cache/
 __pycache__/
+.pytest_cache/
+node_modules/
+dist/
 runtime databases
-```
 
----
+Use .env.example to document configuration without exposing secrets.
 
-# 🔑 Required Environment Variables
+8. Start the backend
 
-For normal DEMO mode, external API keys are not required.
+Open PowerShell in the project directory.
 
-The application can run using simulation.
+Create and activate the virtual environment if necessary:
 
-Important configuration variables include:
+python -m venv venv
+.env\Scripts\Activate.ps1
 
-```env
-RECOVERAI_EXECUTION_ENV=DEMO
-RECOVERAI_LIVE_EXECUTION=0
-```
+Install dependencies:
 
----
-
-# 💳 Razorpay Test Mode Configuration
-
-For Razorpay Test Mode:
-
-```env
-RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxx
-RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxx
-RAZORPAY_WEBHOOK_SECRET=xxxxxxxxxxxxxxxx
-```
-
-The key must begin with:
-
-```text
-rzp_test_
-```
-
-Do not use LIVE keys for Sandbox.
-
----
-
-# 🔐 Production Configuration
-
-Production requires:
-
-```env
-RECOVERAI_EXECUTION_ENV=PRODUCTION
-RECOVERAI_LIVE_EXECUTION=1
-RECOVERAI_PRODUCTION_EXECUTION_ARMED=0
-
-RECOVERAI_ADMIN_TOKEN=<strong-secret>
-
-RAZORPAY_KEY_ID=rzp_live_xxxxxxxxxxxxx
-RAZORPAY_KEY_SECRET=<production-secret>
-RAZORPAY_WEBHOOK_SECRET=<production-webhook-secret>
-
-RECOVERAI_MAX_LIVE_AMOUNT=10000
-RECOVERAI_DAILY_LIVE_BUDGET=50000
-```
-
-Production execution should only be armed after all safety requirements are satisfied.
-
----
-
-# 📧 Sandbox Email
-
-For sandbox email testing:
-
-```env
-RECOVERAI_SANDBOX_EMAIL=your-test-email@example.com
-```
-
-Configure SMTP:
-
-```env
-SMTP_HOST=
-SMTP_PORT=
-SMTP_USERNAME=
-SMTP_PASSWORD=
-SMTP_FROM=
-SMTP_USE_SSL=
-SMTP_STARTTLS=
-```
-
-Only the configured sandbox destination should receive sandbox email actions.
-
----
-
-# 📱 Sandbox SMS
-
-Configure the allowed test number:
-
-```env
-RECOVERAI_SANDBOX_PHONE=+91XXXXXXXXXX
-```
-
-Twilio test credentials:
-
-```env
-TWILIO_TEST_ACCOUNT_SID=
-TWILIO_TEST_AUTH_TOKEN=
-```
-
-Production credentials:
-
-```env
-TWILIO_ACCOUNT_SID=
-TWILIO_AUTH_TOKEN=
-TWILIO_FROM=
-```
-
----
-
-# 🔗 Execution Webhook
-
-For retry scheduling or human escalation workflows:
-
-```env
-RECOVERAI_EXECUTION_WEBHOOK_URL=
-RECOVERAI_EXECUTION_WEBHOOK_SECRET=
-```
-
-The execution webhook is protected using HMAC signing.
-
-RecoverAI includes:
-
-```text
-X-RecoverAI-Signature
-X-RecoverAI-Event
-X-RecoverAI-Delivery-Id
-```
-
-This allows the receiving orchestration system to verify that the request came from RecoverAI.
-
----
-
-# ▶️ Running the Backend
-
-From the project root:
-
-```powershell
-python -m uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
-```
-
-Backend:
-
-```text
-http://127.0.0.1:8000
-```
-
-Health endpoint:
-
-```powershell
-Invoke-RestMethod http://127.0.0.1:8000/health
-```
-
-API documentation:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
----
-
-# 🎨 Running the Frontend
-
-Open another terminal.
-
-Go to:
-
-```powershell
-cd frontend
-```
-
-Install packages:
-
-```powershell
-npm install
-```
-
-Start Vite:
-
-```powershell
-npm run dev
-```
-
-The frontend normally runs at:
-
-```text
-http://localhost:5173
-```
-
----
-
-# ⚡ Quick Start — Windows
-
-From the project root:
-
-```powershell
-.\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-Copy-Item .env.example .env
-python -m uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
-```
 
-Then in another terminal:
+Start the API:
 
-```powershell
+.
+un_backend.ps1
+
+Alternatively:
+
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+
+The backend runs on:
+
+http://127.0.0.1:8000
+
+Health check:
+
+Invoke-RestMethod http://127.0.0.1:8000/health
+
+9. Start the frontend
+
+Open a second PowerShell window in:
+
+RecoverAI/frontend
+
+Install dependencies on the first run:
+
+npm install
+
+Start the frontend:
+
+npm run dev
+
+Open the URL printed by Vite, normally:
+
+http://localhost:5173
+
+Keep both the backend and frontend running while using the application.
+
+10. Quick test
+
+With the backend running:
+
+Invoke-RestMethod http://127.0.0.1:8000/health
+
+A successful response confirms that the API is reachable.
+
+The FastAPI application also exposes its API documentation when enabled by the application.
+
+11. Testing the Merchant Simulator
+
+The Merchant Simulator is the recommended first end-to-end test because it does not require external payment credentials.
+
+In the RecoverAI frontend:
+
+Reset the simulation.
+
+Run/create payment activity.
+
+Inspect the order.
+
+Inspect the payment attempt.
+
+Generate or force a failure scenario.
+
+Check the Live Event Timeline.
+
+Confirm that RecoverAI received the failure event.
+
+Inspect the Decision Agent recommendation.
+
+Execute the available recovery action.
+
+Verify the resulting state.
+
+A failed payment should produce an event chain similar to:
+
+Order created
+     |
+Checkout started
+     |
+Payment attempted
+     |
+Payment failed
+     |
+RecoverAI event received
+     |
+Recovery decision
+     |
+Recovery action
+     |
+Verification
+
+A successful recovery should ultimately show a confirmed successful payment, not merely an attempted recovery.
+
+The important test is therefore the complete:
+
+event -> intelligence -> decision -> execution -> verification
+
+chain.
+
+12. Testing Revenue Recovery Autopilot
+
+Use simulated merchant/payment activity.
+
+Recommended test:
+
+1. Reset the merchant simulation.
+2. Generate or run the relevant payment/failure scenario.
+3. Confirm events appear in the Live Event Timeline.
+4. Open Revenue Recovery Autopilot.
+5. Click "Run Autopilot".
+6. Inspect DETECT.
+7. Inspect DIAGNOSE.
+8. Inspect PRIORITIZE.
+9. Inspect EXECUTE.
+10. Inspect VERIFY.
+11. Review recovery outcome analytics.
+
+A useful run should make the reasoning visible:
+
+Observed deterioration
+        |
+Affected segment
+        |
+Affected customers
+        |
+Recovery ranking
+        |
+Bounded execution
+        |
+Verified outcome
+
+13. Testing Razorpay Test Mode
+
+Razorpay testing should be performed with Test Mode credentials.
+
+Important endpoint groups include:
+
+/api/razorpay/test/order
+/api/razorpay/test/order/{order_id}
+
+/api/integrations/razorpay/webhook
+/api/integrations/recovery-webhook
+
+/api/integrations/status
+/api/production/status
+/api/production/arm
+
+The detailed request payloads and test sequence are documented in:
+
+RAZORPAY_TESTING_GUIDE.md
+PRODUCTION_REALTIME_GUIDE.md
+
+Use those guides together with the current API implementation rather than guessing request payloads.
+
+14. Local webhook testing with zrok
+
+If Razorpay needs to reach a local webhook endpoint, start the backend first.
+
+Open PowerShell in the directory containing the downloaded zrok2 executable:
+
+.\zrok2 version
+.\zrok2 status
+
+Then expose the local backend:
+
+.\zrok2 share public http://127.0.0.1:8000
+
+zrok will provide a public HTTPS address.
+
+If the generated address is:
+
+https://YOUR-ZROK-SUBDOMAIN.shares.zrok.io
+
+the webhook URL must use the actual RecoverAI webhook route, for example:
+
+https://YOUR-ZROK-SUBDOMAIN.shares.zrok.io/api/integrations/razorpay/webhook
+
+Do not assume that the root URL or /health is the webhook endpoint.
+
+If a public URL returns 404, check:
+
+the backend is running,
+
+PowerShell is using the correct project/backend,
+
+the requested path exists,
+
+zrok is forwarding to port 8000,
+
+the correct webhook route is being used.
+
+15. Important API routes
+
+The backend exposes a broad API surface.
+
+Core
+
+GET  /health
+GET  /api/metrics
+GET  /api/analysis
+GET  /api/model-card
+GET  /api/guardrails
+GET  /api/audit-log
+GET  /api/decision-agent
+POST /predict
+POST /execute-recovery
+POST /execute-decision
+GET  /api/execution-log
+
+Merchant Simulator
+
+GET  /api/merchant-sim/dashboard
+POST /api/merchant-sim/reset
+GET  /api/merchant-sim/customers
+GET  /api/merchant-sim/customers/{customer_id}
+GET  /api/merchant-sim/products
+GET  /api/merchant-sim/orders
+GET  /api/merchant-sim/orders/{order_id}
+GET  /api/merchant-sim/timeline
+POST /api/merchant-sim/purchase
+POST /api/merchant-sim/abandon
+POST /api/merchant-sim/resubmit-event
+POST /api/merchant-sim/incident
+GET  /api/merchant-sim/incidents
+POST /api/merchant-sim/tick
+POST /api/merchant-sim/scenario/upi-failure-recovery
+
+Revenue Intelligence
+
+GET  /api/revenue-intelligence/merchant-incidents
+GET  /api/revenue-intelligence/incidents/{incident_id}/blast-radius
+GET  /api/revenue-intelligence/incidents/{incident_id}/cohorts
+GET  /api/revenue-intelligence/incidents/{incident_id}/analytics
+GET  /api/revenue-intelligence/outcome-analytics
+POST /api/revenue-intelligence/incidents/{incident_id}/monitor
+GET  /api/revenue-intelligence/health
+GET  /api/revenue-intelligence/feedback-analytics
+GET  /api/revenue-intelligence/audit
+POST /api/revenue-intelligence/demo
+GET  /api/revenue-intelligence/safety-audit
+GET  /api/revenue-intelligence/scan
+POST /api/revenue-intelligence/autopilot
+GET  /api/revenue-intelligence/anomalies
+GET  /api/revenue-intelligence/root-causes
+GET  /api/revenue-intelligence/customers
+
+Recovery and policy
+
+GET  /api/counterfactual/sample-events
+GET  /api/counterfactual/{event_id}
+
+POST /api/sequence/run
+GET  /api/sequence/{sequence_id}
+GET  /api/sequence-log
+
+POST /api/mandate/run
+GET  /api/mandate/{mandate_sequence_id}
+GET  /api/mandate-log
+
+POST /api/b2b/chase
+GET  /api/b2b/chase/{chase_id}
+GET  /api/b2b/chase-log
+
+POST /api/promise/create
+GET  /api/promise/{promise_id}
+POST /api/promise/{promise_id}/keep
+GET  /api/promises
+
+POST /api/risk-score
+POST /api/policy/what-if
+POST /api/policy/compare
+GET  /api/policy/experiments
+GET  /api/policy/defaults
+
+Integrations and production controls
+
+GET  /api/integrations/status
+POST /api/integrations/environment
+POST /api/integrations/execute
+POST /api/integrations/circuit-breaker/reset
+POST /api/integrations/kill-switch
+GET  /api/integrations/events
+
+POST /api/razorpay/test/order
+GET  /api/razorpay/test/order/{order_id}
+
+GET  /api/production/status
+POST /api/production/arm
+
+POST /api/integrations/razorpay/webhook
+POST /api/integrations/recovery-webhook
+POST /api/integrations/twilio/status
+
+The definitive implementation is in:
+
+src/api/main.py
+
+16. Automated tests
+
+Activate the virtual environment and run:
+
+pytest
+
+or:
+
+.
+un_tests.ps1
+
+Run the test suite after significant changes to the backend or recovery logic.
+
+17. Safety and execution boundaries
+
+RecoverAI intentionally separates intelligence from execution:
+
+Detection
+   |
+Diagnosis
+   |
+Decision
+   |
+Guardrails
+   |
+Execution
+   |
+Verification
+
+The system should never claim that money was recovered merely because a recovery action was attempted.
+
+Important controls include:
+
+Safe Simulation mode
+
+bounded recovery execution
+
+explicit production arming
+
+execution budgets
+
+circuit breaker
+
+kill switch
+
+audit logging
+
+environment checks
+
+verification before recovered-revenue attribution
+
+For normal development and judging, use the Merchant Simulator or Razorpay Test Mode.
+
+18. Data and models
+
+The repository contains generated and processed data used by the evaluation and intelligence layers:
+
+data/raw/
+data/processed/
+data/runtime/
+
+Processed artifacts include datasets, evaluation outputs, policy results and trained model artifacts used by the project.
+
+Runtime databases and local environment files should remain outside source control according to .gitignore.
+
+19. Evaluation and policy tooling
+
+RecoverAI also includes an evaluation layer for studying recovery policies rather than treating the Decision Agent as an unexplained black box.
+
+It contains tooling for:
+
+baselines
+
+calibration
+
+counterfactual analysis
+
+drift
+
+EDA
+
+policy evaluation
+
+policy comparison
+
+policy planning
+
+regret analysis
+
+action scoring
+
+ledger analysis
+
+This makes it possible to compare recovery strategies and inspect their outcomes.
+
+20. Recommended first-time demo
+
+If you are evaluating RecoverAI for the first time, use this order:
+
+Step 1 — Start the backend
+
+.
+un_backend.ps1
+
+Step 2 — Verify the backend
+
+Invoke-RestMethod http://127.0.0.1:8000/health
+
+Step 3 — Start the frontend
+
 cd frontend
 npm install
 npm run dev
-```
 
-Open:
+Step 4 — Open RecoverAI
 
-```text
-http://localhost:5173
-```
+Use the URL displayed by Vite.
 
----
+Step 5 — Test the Merchant Simulator
 
-# 🧪 Run the Complete Test Suite
+Reset the simulation and create/run payment activity.
 
-From the project root:
+Step 6 — Create a failure
 
-```powershell
-.\venv\Scripts\Activate.ps1
-pytest -q
-```
+Generate a payment failure and inspect the Live Event Timeline.
 
-Or:
+Step 7 — Inspect the decision
 
-```powershell
-python -m pytest -q
-```
+Check the diagnosis, selected action, confidence and explanation.
 
----
+Step 8 — Execute and verify
 
-# 🎬 How to Run the Demo
+Run the bounded recovery action and confirm whether the payment actually succeeds.
 
-For the safest demonstration, use:
+Step 9 — Run Revenue Recovery Autopilot
 
-```text
-DEMO
-```
+Trigger Autopilot and inspect:
 
-Make sure:
+DETECT
+DIAGNOSE
+PRIORITIZE
+EXECUTE
+VERIFY
 
-```env
-RECOVERAI_EXECUTION_ENV=DEMO
-RECOVERAI_LIVE_EXECUTION=0
-```
+Step 10 — Test Razorpay Test Mode
 
-Then:
+Only after the local simulator flow is working, configure the Razorpay Test Mode integration.
 
-1. Start backend.
-2. Start frontend.
-3. Open the dashboard.
-4. Confirm execution environment is `DEMO`.
-5. Use the simulation controls.
-6. Start the simulation.
-7. Observe the event timeline.
-8. Inject or trigger the deterministic failure scenario.
-9. Observe merchant anomaly detection.
-10. Observe incident creation.
-11. Inspect root-cause diagnosis.
-12. Inspect exposed revenue.
-13. Inspect affected customers.
-14. Inspect Decision Agent output.
-15. Inspect guardrail decisions.
-16. Run the recovery scenario.
-17. Observe payment outcome.
-18. Observe verification.
-19. Observe recovered revenue.
-20. Inspect analytics and feedback.
-
----
-
-# 🎯 Recommended Judge Demonstration
-
-For a short technical demonstration, show this sequence:
-
-```text
-1. Dashboard
-      ↓
-2. Merchant metrics
-      ↓
-3. Trigger UPI failure scenario
-      ↓
-4. Event timeline
-      ↓
-5. Merchant incident
-      ↓
-6. Root cause
-      ↓
-7. Revenue exposed
-      ↓
-8. Affected customer
-      ↓
-9. Decision Agent
-      ↓
-10. Recovery action
-      ↓
-11. Guardrails
-      ↓
-12. Execution
-      ↓
-13. Payment
-      ↓
-14. Verification
-      ↓
-15. Recovered revenue
-      ↓
-16. Analytics
-```
-
-This demonstrates the architecture rather than only the UI.
-
----
-
-# 🧪 Razorpay Test Demonstration
-
-To demonstrate the real payment integration:
-
-## 1. Configure Razorpay Test credentials
-
-```env
-RAZORPAY_KEY_ID=rzp_test_...
-RAZORPAY_KEY_SECRET=...
-RAZORPAY_WEBHOOK_SECRET=...
-```
-
-## 2. Start the backend
-
-```powershell
-python -m uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
-```
-
-## 3. Start the frontend
-
-```powershell
-cd frontend
-npm run dev
-```
-
-## 4. Select
-
-```text
-RAZORPAY TEST
-```
-
-in the execution environment.
-
-## 5. Open Razorpay Test Checkout.
-
-The application creates the order server-side.
-
-## 6. Trigger a test failure or success.
-
-The Razorpay Test webhook is then sent to RecoverAI.
-
-## 7. Observe:
-
-```text
-Razorpay event
-      ↓
-Webhook
-      ↓
-Signature verification
-      ↓
-RecoverAI decision
-      ↓
-Recovery
-      ↓
-Payment verification
-```
-
----
-
-# 🔎 What Makes RecoverAI Different?
+21. What makes RecoverAI different
 
 RecoverAI is not simply:
 
-```text
-Payment Retry System
-```
-
-It is a:
-
-```text
-Merchant Incident
-+
-Revenue Intelligence
-+
-AI Decision
-+
-Recovery Execution
-+
-Payment Verification
-+
-Revenue Ledger
-+
-Feedback Loop
-```
-
-platform.
-
----
-
-# 🧠 Key Design Principles
-
-## 1. Merchant-aware recovery
-
-Payment failures are analyzed at the merchant level.
-
----
-
-## 2. Customer-aware decisions
-
-Individual customers are evaluated within the incident context.
-
----
-
-## 3. ML does not operate without constraints
-
-The Decision Agent provides predictions and rankings.
-
-Guardrails enforce hard limits.
-
----
-
-## 4. Execution is separated from decisioning
-
-The system distinguishes:
-
-```text
-Decision
-```
-
-from:
-
-```text
-Execution
-```
-
-This makes it possible to test decision quality independently from external side effects.
-
----
-
-## 5. Provider acceptance is not recovery
-
-Creating a payment link does not mean money was recovered.
-
-Only verified payment success counts.
-
----
-
-## 6. Simulation is safe by default
-
-The default execution environment is:
-
-```text
-DEMO
-```
-
-with no external provider calls.
-
----
-
-## 7. Production is deliberately difficult to activate
-
-Production requires multiple independent safety conditions.
-
----
-
-## 8. Actual outcomes are separated from predictions
-
-Decision-time models should not use future recovery outcomes as features.
-
-This prevents leakage.
-
----
-
-## 9. Everything important should be auditable
-
-Important transitions should be reconstructable.
-
-Examples:
-
-```text
-incident detected
-root cause identified
-customer prioritized
-decision made
-guardrail evaluated
-recovery started
-payment attempted
-payment failed/succeeded
-verification completed
-revenue recovered
-incident resolved
-```
-
----
-
-# 🔐 Security & Safety Checklist
-
-Before production execution, verify:
-
-```text
-[ ] RECOVERAI_EXECUTION_ENV=PRODUCTION
-[ ] RECOVERAI_ADMIN_TOKEN configured
-[ ] Production confirmation required
-[ ] Razorpay LIVE credentials configured
-[ ] Razorpay LIVE key starts with rzp_live_
-[ ] Razorpay webhook secret configured
-[ ] RECOVERAI_PRODUCTION_EXECUTION_ARMED=1
-[ ] Live action allow-list configured
-[ ] Maximum live amount configured
-[ ] Daily live budget configured
-[ ] Kill switch operational
-[ ] Webhook verification operational
-[ ] Idempotency verified
-[ ] Bounded retries enabled
-[ ] Execution timeouts enabled
-[ ] Circuit breakers operational
-[ ] Revenue verification operational
-[ ] Recovery outcomes are not used as decision-time features
-```
-
----
-
-# 🚫 What RecoverAI Must Never Do
-
-RecoverAI must never:
-
-```text
-Treat a created payment link as recovered revenue.
-
-Treat an unverified webhook as a successful payment.
-
-Use Razorpay TEST credentials for LIVE production execution.
-
-Allow production execution without authorization.
-
-Ignore the production kill switch.
-
-Ignore amount limits.
-
-Ignore daily budget limits.
-
-Retry forever.
-
-Execute the same recovery action multiple times accidentally.
-
-Leak post-action recovery outcomes into decision-time features.
-
-Claim an external action succeeded when the provider was unavailable.
-```
-
----
-
-# 📁 Repository Structure
-
-```text
-RecoverAI/
-│
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── runtime/
-│
-├── frontend/
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── styles.css
-│   ├── index.html
-│   ├── package.json
-│   ├── package-lock.json
-│   └── vite.config.js
-│
-├── src/
-│   ├── api/
-│   │   ├── main.py
-│   │   └── ...
-│   │
-│   ├── data/
-│   │   ├── customer_generator.py
-│   │   ├── event_generator.py
-│   │   ├── generate_dataset.py
-│   │   ├── merchant_generator.py
-│   │   ├── recovery_simulator.py
-│   │   └── validator.py
-│   │
-│   ├── db/
-│   │   ├── database.py
-│   │   ├── models.py
-│   │   └── repository.py
-│   │
-│   ├── decision/
-│   │   ├── agent.py
-│   │   ├── attribution.py
-│   │   ├── b2b_chaser.py
-│   │   ├── execution.py
-│   │   ├── explanation.py
-│   │   ├── mandate_sequencer.py
-│   │   ├── promise_tracker.py
-│   │   └── sequencer.py
-│   │
-│   ├── evaluation/
-│   │   ├── baselines.py
-│   │   ├── calibration.py
-│   │   ├── counterfactual.py
-│   │   ├── drift.py
-│   │   ├── eda.py
-│   │   ├── ledger.py
-│   │   ├── offline_policy.py
-│   │   ├── planner.py
-│   │   ├── policy_lab.py
-│   │   └── ...
-│   │
-│   ├── features/
-│   ├── models/
-│   ├── risk/
-│   │
-│   ├── incident_platform.py
-│   ├── integrations.py
-│   ├── intelligence.py
-│   ├── merchant_simulator.py
-│   └── voice.py
-│
-├── tests/
-│
-├── .env.example
-├── .gitignore
-├── requirements.txt
-├── pytest.ini
-│
-├── ADVANCED_FEATURES.md
-├── BUILD_STATUS.md
-├── PRODUCTION_REALTIME_GUIDE.md
-├── RAZORPAY_TESTING_GUIDE.md
-├── SESSION_CHANGELOG.md
-└── WINDOWS_QUICKSTART.md
-```
-
----
-
-# 📚 Additional Documentation
-
-The README is the main entry point.
-
-Detailed implementation documentation is also available:
-
-### `ADVANCED_FEATURES.md`
-
-Detailed advanced functionality.
-
-### `BUILD_STATUS.md`
-
-Project build/status information.
-
-### `PRODUCTION_REALTIME_GUIDE.md`
-
-Production and real-time execution guidance.
-
-### `RAZORPAY_TESTING_GUIDE.md`
-
-Detailed Razorpay Test Mode and webhook testing instructions.
-
-### `WINDOWS_QUICKSTART.md`
-
-Windows-specific setup instructions.
-
-### `SESSION_CHANGELOG.md`
-
-Development and implementation history.
-
----
-
-# 🧭 Development Workflow
-
-Recommended development workflow:
-
-```text
-1. Start in DEMO
-        ↓
-2. Run deterministic simulator
-        ↓
-3. Run automated tests
-        ↓
-4. Validate Decision Agent
-        ↓
-5. Validate guardrails
-        ↓
-6. Test Razorpay in SANDBOX
-        ↓
-7. Validate webhook verification
-        ↓
-8. Validate recovered revenue
-        ↓
-9. Review execution logs
-        ↓
-10. Only then consider PRODUCTION
-```
-
----
-
-# 🧪 Useful Commands
-
-## Check Git status
-
-```powershell
+payment failed -> retry
+
+It is designed as:
+
+payment failure
+      |
+      v
+understand the failure
+      |
+      v
+identify affected revenue
+      |
+      v
+rank recovery opportunities
+      |
+      v
+choose an appropriate action
+      |
+      v
+apply execution guardrails
+      |
+      v
+execute in a bounded environment
+      |
+      v
+verify the actual outcome
+      |
+      v
+record the result
+      |
+      v
+evaluate recovery performance
+
+This makes the project demonstrate both the decision-making problem and the operational execution problem.
+
+22. Documentation
+
+Additional documentation in the repository includes:
+
+ADVANCED_FEATURES.md
+BUILD_STATUS.md
+PRODUCTION_REALTIME_GUIDE.md
+RAZORPAY_TESTING_GUIDE.md
+SESSION_CHANGELOG.md
+WINDOWS_QUICKSTART.md
+
+Use this README for the overall system. Use the individual guides for feature-specific procedures.
+
+23. Troubleshooting
+
+git status says "not a git repository"
+
+Make sure PowerShell is inside the project directory containing .git:
+
+cd "C:\path\to\RecoverAI"
 git status
-```
 
-## Pull latest changes
+zrok is not recognized
 
-```powershell
-git pull origin main
-```
+If zrok is not on PATH, run it from the directory containing the executable:
 
-## Run tests
+.\zrok2 version
 
-```powershell
-pytest -q
-```
+Then:
 
-## Run one test file
+.\zrok2 share public http://127.0.0.1:8000
 
-```powershell
-pytest tests/test_merchant_simulator.py -v
-```
+Backend connection refused
 
-## Start backend
+Check that the backend terminal is still running.
 
-```powershell
-python -m uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
-```
+Then:
 
-## Start frontend
-
-```powershell
-cd frontend
-npm run dev
-```
-
-## Install backend dependencies
-
-```powershell
-pip install -r requirements.txt
-```
-
-## Install frontend dependencies
-
-```powershell
-cd frontend
-npm install
-```
-
----
-
-# 🩺 Troubleshooting
-
-## Backend says connection refused
-
-If:
-
-```powershell
 Invoke-RestMethod http://127.0.0.1:8000/health
-```
 
-returns:
+A route returns 404
 
-```text
-Unable to connect to the remote server
-```
+Check the actual route in:
 
-the backend is not running.
+src/api/main.py
 
-Start:
+Do not assume every public tunnel URL maps directly to every endpoint.
 
-```powershell
-python -m uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
-```
-
----
-
-## Frontend cannot reach backend
+Frontend cannot reach the backend
 
 Check:
 
-```text
-Backend:
-http://127.0.0.1:8000
-```
+backend is running on port 8000
 
-and:
+frontend is running
 
-```text
-Frontend:
-http://localhost:5173
-```
+API configuration is correct
 
-Make sure both terminals are running.
+browser network/console errors for the failing request
 
----
+Secrets are exposed
 
-## Razorpay Test is unavailable
+Stop using the exposed credential, rotate it, remove it from the repository/history as appropriate, and ensure .env remains ignored.
 
-Check:
+24. Development principles
 
-```env
-RECOVERAI_EXECUTION_ENV=SANDBOX
-```
+The project is intentionally built around three boundaries:
 
-and:
+Intelligence != Execution
+Prediction  != Verification
+Simulation  != Production
 
-```env
-RAZORPAY_KEY_ID=rzp_test_...
-RAZORPAY_KEY_SECRET=...
-```
+These boundaries are central to the architecture.
 
-Also verify:
+The Merchant Simulator makes it possible to test the complete recovery loop safely, while the Razorpay integration demonstrates how the same architecture can connect to a real payment platform in Test Mode.
 
-```env
-RAZORPAY_WEBHOOK_SECRET=...
-```
+RecoverAI in one sentence
 
----
-
-## Production cannot be activated
-
-This is intentional.
-
-Check:
-
-```text
-RECOVERAI_ADMIN_TOKEN
-RECOVERAI_EXECUTION_ENV
-RAZORPAY_KEY_ID
-RAZORPAY_KEY_SECRET
-RAZORPAY_WEBHOOK_SECRET
-RECOVERAI_PRODUCTION_EXECUTION_ARMED
-```
-
-Production requires live credentials and explicit authorization.
-
----
-
-# 🏆 Project Outcome
-
-RecoverAI demonstrates a complete AI-driven revenue recovery architecture rather than a single ML prediction or payment API integration.
-
-The system connects:
-
-```text
-Merchant Operations
-        +
-Payment Intelligence
-        +
-Anomaly Detection
-        +
-Incident Management
-        +
-Revenue Exposure
-        +
-Customer Prioritization
-        +
-ML Decisioning
-        +
-Policy
-        +
-Safety Guardrails
-        +
-Recovery Execution
-        +
-Razorpay
-        +
-Payment Verification
-        +
-Revenue Ledger
-        +
-Analytics
-        +
-Feedback
-```
-
-into one end-to-end platform.
-
----
-
-# 🌟 The Core Story
-
-Imagine a merchant processing thousands of transactions.
-
-Suddenly:
-
-```text
-UPI failures spike
-```
-
-RecoverAI notices.
-
-```text
-Merchant anomaly
-        ↓
-Incident created
-```
-
-It diagnoses the problem.
-
-```text
-UPI / bank-side degradation
-```
-
-It calculates:
-
-```text
-₹X revenue exposed
-```
-
-It identifies the customers affected.
-
-Then the Decision Agent evaluates:
-
-```text
-RETRY_LATER
-ALTERNATIVE_PAYMENT
-RECOVERY_REMINDER
-HUMAN_ESCALATION
-STOP
-```
-
-The system applies guardrails.
-
-The selected recovery action executes.
-
-The customer pays.
-
-Razorpay sends a signed webhook.
-
-RecoverAI verifies it.
-
-Only then:
-
-```text
-VERIFIED_RECOVERED
-```
-
-is recorded.
-
-The revenue ledger updates.
-
-Analytics update.
-
-The outcome becomes feedback.
-
-And the merchant incident can eventually move toward:
-
-```text
-RESOLVED
-```
-
-That is the RecoverAI loop.
-
----
-
-# 🔥 One-Line Summary
-
-> **RecoverAI is an AI-powered merchant revenue recovery platform that detects payment incidents, identifies exposed revenue, intelligently chooses customer-level recovery actions, safely executes them, verifies actual payment outcomes, and measures the revenue truly recovered.**
-
----
-
-# ⚠️ Security Notice
-
-Never commit:
-
-```text
-.env
-```
-
-or any file containing:
-
-```text
-RAZORPAY_KEY_SECRET
-RAZORPAY_WEBHOOK_SECRET
-RECOVERAI_ADMIN_TOKEN
-SMTP_PASSWORD
-TWILIO_AUTH_TOKEN
-RECOVERAI_EXECUTION_WEBHOOK_SECRET
-```
-
-Use:
-
-```text
-.env.example
-```
-
-as the public configuration template.
-
-Never place real production credentials in source code, documentation, screenshots, commits, or public repositories.
-
----
-
-# 📄 License
-
-This project is currently intended as a project/demo implementation.
-
-See the repository for the latest project status and documentation.
-
----
-
-# 👨‍💻 Author
-
-**Veeresh Devadhar**
-
-GitHub:
-
-https://github.com/veereshdevadhar
-
-Project:
-
-https://github.com/veereshdevadhar/Recoverai_new
+RecoverAI turns payment failures into explainable, bounded and verifiable revenue-recovery decisions instead of blindly retrying failed payments.
