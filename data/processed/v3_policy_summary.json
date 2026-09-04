@@ -1,0 +1,26 @@
+{
+  "version": "v3",
+  "events": 1289,
+  "revenue_at_risk": 9801507.57,
+  "revenue_recovered": 5825350.14,
+  "recovery_rate": 0.594332055390128,
+  "baseline_recovered": 5350471.29,
+  "uplift_vs_baseline": 0.0887545833369007,
+  "oracle_recovered": 8314960.7,
+  "oracle_capture": 0.7005866113113438,
+  "policy_regret": 2489610.5600000005,
+  "action_cost_assumptions": {
+    "ALTERNATIVE_PAYMENT": 5.0,
+    "RECOVERY_REMINDER": 2.0,
+    "RETRY_LATER": 1.0,
+    "HUMAN_ESCALATION": 250.0
+  },
+  "stop_threshold": 0.15,
+  "min_decision_margin": 0.02,
+  "guardrails": [
+    "human escalation requires amount >= 10000 and customer success rate >= 0.85",
+    "retry later blocked after retry_count >= 3",
+    "STOP when best predicted recovery probability is below threshold",
+    "narrow decisions prefer lower operational cost"
+  ]
+}

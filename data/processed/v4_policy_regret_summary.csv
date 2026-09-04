@@ -1,0 +1,10 @@
+metric,value
+events,12347.0
+v2_recovered,5869769.04
+oracle_recovered,74481174.57
+total_regret,68611405.53
+oracle_action_match_rate,0.04810885235279825
+missed_events,11753.0
+retry_later_oracle_events,679.0
+retry_later_missed_events,674.0
+retry_later_missed_regret,4534818.75

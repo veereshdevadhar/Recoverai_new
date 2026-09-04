@@ -1,0 +1,12 @@
+{
+  "events": 1289,
+  "revenue_at_risk": 9801507.57,
+  "revenue_recovered": 5279482.93,
+  "oracle_revenue": 8314960.699999999,
+  "policy_regret": 3035477.7699999996,
+  "oracle_action_match_rate": 0.4313421256788208,
+  "baseline_alternative_payment": 5350471.29,
+  "recovery_rate": 0.5386398870066883,
+  "oracle_capture": 0.634937809146831,
+  "relative_uplift_vs_baseline": -0.013267683565123912
+}

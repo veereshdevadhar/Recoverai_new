@@ -1,0 +1,20 @@
+{
+  "dataset_events": 100000,
+  "held_out_events": 12347,
+  "evaluation_split": "August held-out temporal test",
+  "revenue_at_risk": 88796908.02,
+  "revenue_recovered": 52737309.04,
+  "recovery_rate": 0.593909,
+  "intervention_cost": 244270.0,
+  "net_recovered": 52493039.04,
+  "baseline_revenue": 48887068.39,
+  "incremental_recovery": 3850240.65,
+  "relative_uplift": 0.078758,
+  "oracle_definition": "hindsight best feasible action under the same production guardrails",
+  "oracle_revenue": 69051324.62,
+  "oracle_capture": 0.763741,
+  "policy_regret": 16314015.58,
+  "model": "v3-100k",
+  "generated_at": "2026-09-04T09:31:49.870460+00:00",
+  "artifact": "v3_100k_august_policy_results.csv"
+}

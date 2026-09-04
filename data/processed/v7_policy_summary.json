@@ -1,0 +1,20 @@
+{
+  "version": "V7",
+  "events": 1289,
+  "revenue_at_risk": 9801507.57,
+  "revenue_recovered": 5218644.34,
+  "recovery_rate": 0.5324328224744717,
+  "baseline_alternative_payment": 39755605.72,
+  "incremental_recovery": -34536961.379999995,
+  "relative_uplift": -0.8687318619478449,
+  "oracle_recovered": 8314960.699999999,
+  "oracle_capture": 0.6276210469641788,
+  "policy_regret": 3096316.3599999994,
+  "oracle_action_match": 0.23041117145073697,
+  "chosen_action_distribution": {
+    "ALTERNATIVE_PAYMENT": 806,
+    "RECOVERY_REMINDER": 477,
+    "HUMAN_ESCALATION": 3,
+    "RETRY_LATER": 3
+  }
+}
