@@ -1937,49 +1937,6 @@ Then:
 19. Observe recovered revenue.
 20. Inspect analytics and feedback.
 
----
-
-# 🎯 Recommended Judge Demonstration
-
-For a short technical demonstration, show this sequence:
-
-```text
-1. Dashboard
-      ↓
-2. Merchant metrics
-      ↓
-3. Trigger UPI failure scenario
-      ↓
-4. Event timeline
-      ↓
-5. Merchant incident
-      ↓
-6. Root cause
-      ↓
-7. Revenue exposed
-      ↓
-8. Affected customer
-      ↓
-9. Decision Agent
-      ↓
-10. Recovery action
-      ↓
-11. Guardrails
-      ↓
-12. Execution
-      ↓
-13. Payment
-      ↓
-14. Verification
-      ↓
-15. Recovered revenue
-      ↓
-16. Analytics
-```
-
-This demonstrates the architecture rather than only the UI.
-
----
 
 # 🧪 Razorpay Test Demonstration
 
