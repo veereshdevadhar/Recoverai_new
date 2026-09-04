@@ -440,29 +440,49 @@ export default function App(){
 
 function Decision({result,onExecute,execution,executing,liveExecution,setLiveExecution,executionChannel,setExecutionChannel,integrationStatus,liveConfirmation,setLiveConfirmation,integrationTestAction,setIntegrationTestAction,form}){
   if(!result) return <div className="result-card empty"><BrainCircuit size={36}/><h3>Decision appears here</h3><p>Run the agent to see probabilities, expected money, blocked actions, confidence, reasoning and the execution trace.</p></div>
+
+  // PAYMENT_SUCCESS responses intentionally do not contain ranked_actions: a
+  // successful payment is already recovered and the backend returns a STOP-only
+  // decision instead of sending the event through failure-trained action models.
+  // Normalize optional response collections here so the Decision UI remains
+  // render-safe for both normal recovery decisions and terminal events.
+  const rankedActions = Array.isArray(result.ranked_actions) ? result.ranked_actions : []
+  const guardrails = result.guardrails && typeof result.guardrails === 'object' ? result.guardrails : {}
+  const agentTrace = Array.isArray(result.agent?.trace) ? result.agent.trace : []
+  const whySelected = Array.isArray(result.explanation?.why_selected) ? result.explanation.why_selected : []
+  const featureAttribution = Array.isArray(result.feature_attribution) ? result.feature_attribution : []
+  const selectableActions = rankedActions.filter(x=>x?.allowed && x.action!=='STOP')
+
   return <div className="result-card">
     <div className="recommend"><div><span>RECOMMENDED ACTION</span><h2>{pretty(result.recommended_action)}</h2></div><div className="check"><CheckCircle2 size={27}/></div></div>
     <div className="confidence"><span>Decision confidence</span><b>{result.decision_confidence}</b><small>score margin {money(result.score_margin)}</small></div>
     <p className="reason">{result.reason}</p>
-    <div className="score-list">{result.ranked_actions.map(x=><div className={`score ${!x.allowed?'blocked':''}`} key={x.action}><div><b>{pretty(x.action)}</b><span>{x.action==='STOP'?'Safe fallback':`${pct(result.probabilities[x.action])} ML probability · ${money(result.base_expected_net_value?.[x.action])} base · ${result.policy_adjustments?.[x.action] ? `${result.policy_adjustments[x.action]>0?'+':''}${money(result.policy_adjustments[x.action])} policy` : 'no policy adjustment'} · cost ${money(result.action_costs[x.action])}`}</span></div><strong>{x.score==null?'BLOCKED':money(x.score)}</strong></div>)}</div>
-    <div className="guard-grid">{Object.entries(result.guardrails).map(([a,g])=><div className={`guard-mini ${g.allowed?'ok':'no'}`} key={a}><ShieldCheck size={15}/><div><b>{pretty(a)}</b><span>{g.allowed?'Allowed':`Blocked · ${g.reasons.join(' ')}`}</span></div></div>)}</div>
+    <div className="score-list">
+      {rankedActions.length>0
+        ? rankedActions.map(x=><div className={`score ${!x.allowed?'blocked':''}`} key={x.action}><div><b>{pretty(x.action)}</b><span>{x.action==='STOP'?'Safe fallback':`${pct(result.probabilities?.[x.action])} ML probability · ${money(result.base_expected_net_value?.[x.action])} base · ${result.policy_adjustments?.[x.action] ? `${result.policy_adjustments[x.action]>0?'+':''}${money(result.policy_adjustments[x.action])} policy` : 'no policy adjustment'} · cost ${money(result.action_costs?.[x.action])}`}</span></div><strong>{x.score==null?'BLOCKED':money(x.score)}</strong></div>)
+        : <div className="score">
+            <div><b>STOP · No recovery required</b><span>{result.reason||'Payment has already succeeded; no recovery intervention is required.'}</span></div>
+            <strong>SAFE</strong>
+          </div>}
+    </div>
+    <div className="guard-grid">{Object.entries(guardrails).map(([a,g])=><div className={`guard-mini ${g.allowed?'ok':'no'}`} key={a}><ShieldCheck size={15}/><div><b>{pretty(a)}</b><span>{g.allowed?'Allowed':`Blocked · ${(Array.isArray(g.reasons)?g.reasons:[]).join(' ')}`}</span></div></div>)}</div>
     <div className="note" style={{marginTop:14}}><Plug size={15}/><div><b>Execution mode</b><span>Safe simulation never contacts a customer. Live mode is available only when explicitly enabled and configured on the backend. A provider acceptance is never counted as recovered revenue until payment status/webhook confirmation.</span></div></div>
     <div className="form-row" style={{marginTop:10,alignItems:'end'}}><label className="field"><span>External execution</span><select value={liveExecution?'LIVE':'SAFE_SIMULATION'} onChange={e=>{const live=e.target.value==='LIVE';setLiveExecution(live);setLiveConfirmation(false)}}><option value="SAFE_SIMULATION">Safe simulation</option><option value="LIVE" disabled={!integrationStatus?.live_enabled}>{integrationStatus?.environment==='SANDBOX'?'RAZORPAY TEST execution':'LIVE production execution'}</option></select></label><label className="field"><span>Reminder channel</span><select value={executionChannel} onChange={e=>setExecutionChannel(e.target.value)}><option value="auto">Auto (configured channel)</option><option value="email">Email</option><option value="sms">SMS</option><option value="voice">Voice — Hinglish</option></select></label></div>
     {liveExecution&&<label className="field" style={{marginTop:10}}><span>{integrationStatus?.environment==='SANDBOX'?'Test execution confirmation':'Live confirmation'}</span><label style={{display:'flex',gap:8,alignItems:'center'}}><input type="checkbox" checked={liveConfirmation} onChange={e=>setLiveConfirmation(e.target.checked)}/> I understand this will make an external provider call{integrationStatus?.environment==='PRODUCTION'?' and may contact a real customer or create a real payment link.':'.'}</label></label>}
     {liveExecution&&<><div className="attribution-caption">Environment: {integrationStatus?.environment_metadata?.label||integrationStatus?.environment||'DEMO'} · Max amount: {money(integrationStatus?.max_live_amount)} · Daily budget: {money(integrationStatus?.daily_live_budget)} · Kill switch: {integrationStatus?.kill_switch?'ON':'OFF'}</div><div className="attribution-caption">Configured providers: Razorpay {integrationStatus?.providers?.razorpay?'✓':'—'} · Email {integrationStatus?.providers?.smtp?'✓':'—'} · SMS {integrationStatus?.providers?.twilio?'✓':'—'} · Webhook {integrationStatus?.providers?.execution_webhook?'✓':'—'}</div></>}
-    <div className="agent-trace"><div className="trace-title"><Bot size={15}/> Decision Agent Trace <span>{result.agent?.version||'1.0'}</span></div>{result.agent?.trace?.map((s,i)=><div className="trace-row" key={s.step}><span>{String(i+1).padStart(2,'0')}</span><b>{s.label}</b><em>✓</em></div>)}</div>
+    <div className="agent-trace"><div className="trace-title"><Bot size={15}/> Decision Agent Trace <span>{result.agent?.version||'1.0'}</span></div>{agentTrace.map((s,i)=><div className="trace-row" key={s.step||i}><span>{String(i+1).padStart(2,'0')}</span><b>{s.label}</b><em>✓</em></div>)}</div>
     {result.explanation&&<div className="agent-trace">
       <div className="trace-title"><ListChecks size={15}/> Why this decision</div>
-      <ul className="explanation-list">{result.explanation.why_selected.map((r,i)=><li key={i}>{r}</li>)}</ul>
+      {whySelected.length>0&&<ul className="explanation-list">{whySelected.map((r,i)=><li key={i}>{r}</li>)}</ul>}
       {Object.keys(result.explanation.why_others_rejected||{}).length>0&&<>
         <div className="trace-title" style={{marginTop:12}}>Why others were rejected</div>
         {Object.entries(result.explanation.why_others_rejected).map(([a,reasons])=><div className="rejection-row" key={a}><b>{pretty(a)}</b><span>{reasons.join(' ')}</span></div>)}
       </>}
     </div>}
-    {result.feature_attribution&&result.feature_attribution.length>0&&<div className="agent-trace">
+    {featureAttribution.length>0&&<div className="agent-trace">
       <div className="trace-title"><Layers size={15}/> Model feature attribution</div>
       <p className="attribution-caption">What actually moved the model's probability for this decision, measured by re-scoring with each feature reset to its typical value.</p>
-      <div className="attribution-bars">{result.feature_attribution.map(f=><div className="attribution-row" key={f.feature}>
+      <div className="attribution-bars">{featureAttribution.map(f=><div className="attribution-row" key={f.feature}>
         <div className="attribution-label"><b>{f.label}</b><span>{String(f.actual_value)} vs typical {String(f.typical_value)}</span></div>
         <div className="attribution-bar-track">
           <div className={`attribution-bar-fill ${f.direction}`} style={{width:`${Math.min(100,Math.abs(f.impact)*400)}%`}}/>
@@ -476,7 +496,7 @@ function Decision({result,onExecute,execution,executing,liveExecution,setLiveExe
       <div className="agent-trace" style={{marginTop:12}}>
         <div className="trace-title"><Plug size={15}/> Integration test <span>{integrationStatus?.environment_metadata?.label||integrationStatus?.environment||'DEMO'}</span></div>
         <p className="attribution-caption">Select any allowed action to test it independently of the AI recommendation. The selected action is what will execute; the recommendation is not substituted.</p>
-        <div className="chips">{result.ranked_actions.filter(x=>x.allowed && x.action!=='STOP').map(x=><button type="button" key={x.action} className="secondary" style={{borderColor:integrationTestAction===x.action?'var(--brand)':'',opacity:integrationTestAction===x.action?1:.8}} onClick={()=>setIntegrationTestAction(x.action)}>{pretty(x.action)}</button>)}</div>
+        <div className="chips">{selectableActions.map(x=><button type="button" key={x.action} className="secondary" style={{borderColor:integrationTestAction===x.action?'var(--brand)':'',opacity:integrationTestAction===x.action?1:.8}} onClick={()=>setIntegrationTestAction(x.action)}>{pretty(x.action)}</button>)}</div>
         <button className="secondary" style={{marginTop:10}} onClick={()=>onExecute(integrationTestAction)} disabled={executing || !integrationTestAction || (liveExecution && !liveConfirmation)}>{executing?'Executing…':integrationTestAction?`Execute Selected: ${pretty(integrationTestAction)}`:'Select an action above'}</button>
       </div>
       {execution&&<div className={`execution-result ${execution.state==='RECOVERED'?'success':''}`}><b>{pretty(execution.state)}</b><span>{execution.outcome_reason}</span><small>{execution.execution_id} · {execution.execution_mode} · {execution.environment||'DEMO'} · {execution.selection_source||'AI_RECOMMENDATION'}</small>
